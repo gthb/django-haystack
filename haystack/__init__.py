@@ -98,6 +98,7 @@ def autodiscover():
         __import__("%s.search_indexes" % app)
 
 # Make sure the site gets loaded.
+from os import environ
 def handle_registrations(*args, **kwargs):
     """
     Ensures that any configuration of the SearchSite(s) are handled when
@@ -106,19 +107,14 @@ def handle_registrations(*args, **kwargs):
     This makes it possible for scripts/management commands that affect models
     but know nothing of Haystack to keep the index up to date.
     """
-    # This is a little dirty but we need to run the code that follows only
-    # once, no matter how many times the main Haystack module is imported.
-    # We'll look through the stack to see if we appear anywhere and simply
-    # return if we do, allowing the original call to finish.
-    stack = inspect.stack()
-    
-    for stack_info in stack[1:]:
-        if 'handle_registrations' in stack_info[3]:
-            return
+    if environ.has_key('handling_registrations'):
+        return
     
     # Pull in the config file, causing any SearchSite initialization code to
     # execute.
+    environ['handling_registrations'] = 'true'
     search_sites_conf = __import__(settings.HAYSTACK_SITECONF)
+    del environ['handling_registrations']
 
 
 handle_registrations()
