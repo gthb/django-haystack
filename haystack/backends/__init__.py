@@ -370,11 +370,14 @@ class BaseSearchQuery(object):
         self._results = results.get('results', [])
         self._hit_count = results.get('hits', 0)
     
-    def run_raw(self):
+    def run_raw(self, count=False):
         """Executes a raw query. Returns a list of search results."""
         kwargs = self.build_params()
         kwargs.update(self._raw_query_params)
-        
+        if count:
+            kwargs['start_offset'] = 0
+            kwargs['end_offset'] = 0
+
         results = self.backend.search(self._raw_query, **kwargs)
         self._results = results.get('results', [])
         self._hit_count = results.get('hits', 0)
@@ -394,7 +397,7 @@ class BaseSearchQuery(object):
                 self.run_mlt()
             elif self._raw_query:
                 # Special case for raw queries.
-                self.run_raw()
+                self.run_raw(count=True)
             else:
                 self.run()
         
