@@ -113,6 +113,7 @@ class SearchBackend(BaseSearchBackend):
                 'hits': 0,
             }
         
+        in_kwargs = kwargs
         kwargs = {
             'fl': '* score',
         }
@@ -132,6 +133,11 @@ class SearchBackend(BaseSearchBackend):
         if highlight is True:
             kwargs['hl'] = 'true'
             kwargs['hl.fragsize'] = '200'
+
+        for passthrough in ('qt', 'bq', 'bf'):
+            passthrough_value = in_kwargs.get(passthrough)
+            if passthrough_value:
+                kwargs[passthrough] = passthrough_value
         
         if getattr(settings, 'HAYSTACK_INCLUDE_SPELLING', False) is True:
             kwargs['spellcheck'] = 'true'
