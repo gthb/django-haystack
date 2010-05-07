@@ -395,7 +395,7 @@ class BaseSearchQuery(object):
             if self._more_like_this:
                 # Special case for MLT.
                 self.run_mlt()
-            elif self._raw_query:
+            elif self._raw_query is not None:
                 # Special case for raw queries.
                 self.run_raw(count=True)
             else:
@@ -414,7 +414,7 @@ class BaseSearchQuery(object):
             if self._more_like_this:
                 # Special case for MLT.
                 self.run_mlt()
-            elif self._raw_query:
+            elif self._raw_query is not None:
                 # Special case for raw queries.
                 self.run_raw()
             else:
