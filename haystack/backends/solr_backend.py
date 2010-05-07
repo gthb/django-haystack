@@ -118,14 +118,9 @@ class SearchBackend(BaseSearchBackend):
                 'results': [],
                 'hits': 0,
             }
-        
-        kwargs = {
-            'fl': '* score',
-        }
-        
-        if fields:
-            kwargs['fl'] = fields
-        
+
+        kwargs['fl'] = fields or '* score'
+
         if sort_by is not None:
             kwargs['sort'] = sort_by
         
