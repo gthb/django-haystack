@@ -459,6 +459,8 @@ class SearchQuerySet(object):
         This will cause the query to execute and should generally be used when
         presenting the data.
         """
+        if self.query._facet_counts:
+            return self.query.get_facet_counts()
         clone = self._clone()
         return clone.query.get_facet_counts()
 
