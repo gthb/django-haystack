@@ -153,7 +153,9 @@ class SearchQuerySet(object):
         # an array of 100,000 ``None``s consumed less than .5 Mb, which ought
         # to be an acceptable loss for consistent and more efficient caching.
         if len(self._result_cache) == 0:
-            self._result_cache = [None for i in xrange(self.query.get_count())]
+            self._result_cache = [None] * self.query.get_count()
+        elif len(self._result_cache) < end:
+            self._result_cache.extend([None] * (end - len(self._result_cache)))
 
         if start is None:
             start = 0
