@@ -236,7 +236,7 @@ class SearchQuerySet(object):
             bound = k + 1
 
         # We need check to see if we need to populate more of the cache.
-        if len(self._result_cache) <= 0 or (None in self._result_cache[start:bound] and not self._cache_is_full()):
+        if len(self._result_cache) < bound or (None in self._result_cache[start:bound] and not self._cache_is_full()):
             try:
                 self._fill_cache(start, bound)
             except StopIteration:
