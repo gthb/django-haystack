@@ -69,8 +69,16 @@ class SearchQuerySet(object):
             # Some backends give weird, false-y values here. Convert to zero.
             if not self._result_count:
                 self._result_count = 0
-            elif not self._result_cache and not self.query.start_offset:
-                self._result_cache = self.query.get_results()
+            else:
+                results = self.query.get_results()
+                start_offs = self.query.start_offset or 0
+                end_offs = start_offs + len(results)
+                if self._result_cache and len(self._result_cache) < end_offs:
+                    self._result_cache.extend(
+                        [None] * (end_offs - len(self._result_cache)))
+                else:
+                    self._result_cache = [None] * (end_offs)
+                self._result_cache[start_offs:end_offs] = results
 
         # This needs to return the actual number of hits, not what's in the cache.
         return self._result_count - self._ignored_result_count
